@@ -1,36 +1,41 @@
 // https://leetcode-cn.com/problems/climbing-stairs/
 
+#include <vector>
+#include <unordered_map>
+#include <string>
+
+using namespace std;
+
 class Solution {
 public:
-    // 递归法+备忘录
-    int climb(int n, unordered_map<int, int>& mp)
+    // 递归法+备忘录:0ms,6.1M
+    int climb(int n, vector<int>& visited)
     {
-        if (mp.find(n) != mp.end()) {
-            return mp[n];
+        if (visited[n] == 0) {
+            visited[n] = climb(n - 1, visited) + climb(n - 2, visited);
         }
 
-        int step1 = 0;
-        if (mp.find(n - 1) != mp.end()) {
-            step1 = mp[n - 1];
-        } else {
-            step1 = climb(n - 1, mp);
-            mp[n - 1] = step1;
-        }
-
-        int step2 = 0;
-        if (mp.find(n - 2) != mp.end()) {
-            step2 = mp[n - 2];
-        } else {
-            step2 = climb(n - 2, mp);
-            mp[n - 2] = step2;
-        }
-
-        return step1 + step2;
+        return visited[n];
     }
+
     int climbStairs(int n) {
-        unordered_map<int, int> mp;
-        mp[1] = 1;
-        mp[2] = 2;
-        return climb(n, mp);
+        vector<int> visited(n + 2, 0);
+        visited[1] = 1;
+        visited[2] = 2;
+        return climb(n, visited);
+    }
+};
+
+class Solution {
+public:
+    // dp table+备忘录:0ms, 6.1M
+    int climbStairs(int n) {
+        vector<int> dp(n + 2, 0);
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
     }
 };
